@@ -72,7 +72,7 @@ Revealator.unreveal( theAwesomeViewYouWantToUnreveal )
 References
 ========
 
-This project uses [ozodrukh's CircularReveal'](https://github.com/ozodrukh/CircularReveal) for Android 4 compatibility.
+This project uses [ozodrukh's CircularReveal](https://github.com/ozodrukh/CircularReveal) for Android 4 compatibility.
 
 License
 ========
