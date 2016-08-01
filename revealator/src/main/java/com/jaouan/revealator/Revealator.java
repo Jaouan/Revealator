@@ -180,22 +180,47 @@ public class Revealator {
 
         private View viewToUnreveal;
 
-        private int duration = 250;
+        private int unrevealDuration = 250;
+
+        private int translateDuration = 250;
 
         private Runnable endAction;
+
+        private View toView;
 
         private UnrevealBuilder(@NonNull final View viewToUnreveal) {
             this.viewToUnreveal = viewToUnreveal;
         }
 
         /**
-         * Defines duration.
-         *
-         * @param duration Duration.
+         * Defines the view toView translate after the "unrevealation".
+         * @param toView View toView translate.
          * @return Builder.
          */
-        public UnrevealBuilder withDuration(final int duration) {
-            this.duration = duration;
+        public UnrevealBuilder to(final View toView) {
+            this.toView = toView;
+            return this;
+        }
+
+        /**
+         * Defines the unreveal duration.
+         *
+         * @param unrevealDuration Unreveal duration.
+         * @return Builder.
+         */
+        public UnrevealBuilder withUnrevealDuration(final int unrevealDuration) {
+            this.unrevealDuration = unrevealDuration;
+            return this;
+        }
+
+        /**
+         * Defines the translate duration.
+         *
+         * @param translateDuration translate duration.
+         * @return Builder.
+         */
+        public UnrevealBuilder withTranslateDuration(final int translateDuration) {
+            this.translateDuration = translateDuration;
             return this;
         }
 
@@ -215,17 +240,32 @@ public class Revealator {
          */
         public void start() {
             // - Reveal the view !
-            RevealatorHelper.unrevealView(viewToUnreveal, this.duration, new Runnable() {
+            RevealatorHelper.unrevealView(viewToUnreveal, this.unrevealDuration, new Runnable() {
                         @Override
                         public void run() {
-                            // - Fire end action if necessary.
-                            if (endAction != null) {
+                            // - If no to view, fire end action if necessary.
+                            if (toView == null && endAction != null) {
                                 endAction.run();
                             }
                         }
                     }
             );
+
+            // - If to view exists, show and translate the "to view".
+            if(toView != null) {
+                RevealatorHelper.showAndTranslateView(toView, viewToUnreveal, (int)(this.unrevealDuration * 0.9f), this.translateDuration, new Runnable() {
+                            @Override
+                            public void run() {
+                                // - Fire end action if necessary.
+                                if (endAction != null) {
+                                    endAction.run();
+                                }
+                            }
+                        }
+                );
+            }
         }
+
     }
 
 }

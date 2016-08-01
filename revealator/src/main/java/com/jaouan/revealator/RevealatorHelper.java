@@ -20,33 +20,51 @@ import io.codetail.animation.ViewAnimationUtils;
 /**
  * Helper for the revealator.
  */
-public class RevealatorHelper {
+public final class RevealatorHelper {
 
     /**
-     * Helps to translate a view to another view.
+     * Disallow instantiation.
+     */
+    private RevealatorHelper() {
+    }
+
+    /**
+     * Get center locations delta between two views.
+     *
+     * @param viewA View A.
+     * @param viewB View B.
+     * @return Locations delta [X,Y].
+     */
+    private static int[] getCenterLocationsDelta(final View viewA, final View viewB) {
+        int[] fromLocation = new int[2];
+        viewA.getLocationOnScreen(fromLocation);
+        int[] toLocation = new int[2];
+        viewB.getLocationOnScreen(toLocation);
+        int deltaX = toLocation[0] - fromLocation[0] + viewB.getMeasuredWidth() / 2 - viewA.getMeasuredWidth() / 2;
+        int deltaY = toLocation[1] - fromLocation[1] + viewB.getMeasuredHeight() / 2 - viewA.getMeasuredHeight() / 2;
+        return new int[]{deltaX, deltaY};
+    }
+
+    /**
+     * Helps to hide then translate a view to another view.
      *
      * @param fromView From view.
      * @param toView   Target view.
      * @param duration Duration.
      */
-    static void translateAndHideView(final View fromView, View toView, long duration) {
+    static void translateAndHideView(final View fromView, final View toView, final long duration) {
         // - Determine translate delta.
-        int[] fromLocation = new int[2];
-        fromView.getLocationOnScreen(fromLocation);
-        int[] toLocation = new int[2];
-        toView.getLocationOnScreen(toLocation);
-        int toX = toLocation[0] - fromLocation[0] + toView.getMeasuredWidth() / 2 - fromView.getMeasuredWidth() / 2;
-        int toY = toLocation[1] - fromLocation[1] + toView.getMeasuredHeight() / 2 - fromView.getMeasuredHeight() / 2;
+        final int[] delta = getCenterLocationsDelta(fromView, toView);
 
         // - Prepare translate animation.
-        final TranslateAnimation translateAnimation = new TranslateAnimation(0, toX, 0, toY);
+        final TranslateAnimation translateAnimation = new TranslateAnimation(0, delta[0], 0, delta[1]);
         translateAnimation.setDuration(duration);
         translateAnimation.setInterpolator(new AccelerateInterpolator());
 
         // - Prepare hide animation.
-        final ScaleAnimation hideAnimation = new ScaleAnimation(fromView.getScaleX(), 0, fromView.getScaleY(), 0, Animation.ABSOLUTE, toX + fromView.getMeasuredWidth() / 2, Animation.ABSOLUTE, toY + fromView.getMeasuredHeight() / 2);
-        hideAnimation.setDuration(duration / 5);
-        hideAnimation.setStartOffset((long) (duration * 0.9));
+        final ScaleAnimation hideAnimation = new ScaleAnimation(fromView.getScaleX(), 0, fromView.getScaleY(), 0, Animation.ABSOLUTE, delta[0] + fromView.getMeasuredWidth() / 2, Animation.ABSOLUTE, delta[1] + fromView.getMeasuredHeight() / 2);
+        hideAnimation.setDuration((long) (duration *0.2f));
+        hideAnimation.setStartOffset((long) (duration * 0.9f));
         hideAnimation.setInterpolator(new BounceInterpolator());
 
         // - Prepare animations set.
@@ -62,6 +80,47 @@ public class RevealatorHelper {
 
         // - Let's move !
         fromView.startAnimation(animationSet);
+    }
+
+    /**
+     * Helps to translate then show a view to another view.
+     *
+     * @param viewToTranslate      View to translate..
+     * @param fromView             From view.
+     * @param startDelay           Start delay.
+     * @param duration             Translate duration.
+     * @param animationEndCallBack Callback fired on animation end.
+     */
+    public static void showAndTranslateView(final View viewToTranslate, final View fromView, final int startDelay, final int duration, final Runnable animationEndCallBack) {
+        // - Determine translate delta.
+        final int[] delta = getCenterLocationsDelta(viewToTranslate, fromView);
+
+        // - Prepare show animation.
+        final ScaleAnimation showAnimation = new ScaleAnimation(0, viewToTranslate.getScaleX(), 0, viewToTranslate.getScaleY(), Animation.ABSOLUTE, viewToTranslate.getMeasuredWidth() / 2, Animation.ABSOLUTE,  viewToTranslate.getMeasuredHeight() / 2);
+        showAnimation.setDuration((long) (duration * 0.2f));
+        showAnimation.setInterpolator(new BounceInterpolator());
+
+        // - Prepare translate animation.
+        final TranslateAnimation translateAnimation = new TranslateAnimation(delta[0], 0, delta[1], 0);
+        translateAnimation.setDuration(duration);
+        showAnimation.setStartOffset((long) (duration * 0.1f));
+        translateAnimation.setInterpolator(new AccelerateInterpolator());
+
+        // - Prepare animations set.
+        final AnimationSet animationSet = new AnimationSet(true);
+        animationSet.setStartOffset(startDelay);
+        animationSet.addAnimation(showAnimation);
+        animationSet.addAnimation(translateAnimation);
+        animationSet.setAnimationListener(new AnimationListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                viewToTranslate.setVisibility(View.VISIBLE);
+                animationEndCallBack.run();
+            }
+        });
+
+        // - Let's move !
+        viewToTranslate.startAnimation(animationSet);
     }
 
     /**
@@ -147,7 +206,7 @@ public class RevealatorHelper {
                 findAllVisibleChilds((ViewGroup) childView, ordoredChilds);
                 continue;
             }
-            if(childView.getVisibility() == View.VISIBLE) {
+            if (childView.getVisibility() == View.VISIBLE) {
                 ordoredChilds.add(childView);
             }
         }

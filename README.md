@@ -4,7 +4,7 @@ Android Revealator
 An helper to circle reveal/unreveal a view easily, with translations and childs animations.
 The libraries is Android 15+ compatible.
 
-![demo](art/demo.gif)
+![demo](art/demo1.gif) ![demo](art/demo2.gif)
 
 Installation
 --------
@@ -17,7 +17,7 @@ repositories {
 ```
 
 ```java
-compile 'com.github.jaouan:revealator:0.0.1'
+compile 'com.github.jaouan:revealator:1.0.0'
 ```
 
 Usage
@@ -64,7 +64,9 @@ Revealator.reveal( theAwesomeViewYouWantToReveal )
 ... or unreveal.
 ```java
 Revealator.unreveal( theAwesomeViewYouWantToUnreveal )
-    //.withDuration(...)
+    .to( theInitiatorViewYouWantToTranslateBack )
+    //.withUnrevealDuration(...)
+    //.withTranslateDuration(...)
     //.withEndAction(...)
     .start();
 ```

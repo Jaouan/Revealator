@@ -46,14 +46,16 @@ public class ExempleActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Revealator.unreveal(theAwesomeView)
+                        .to(fab)
+                        //.withUnrevealDuration(...)
+                        //.withTranslateDuration(...)
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                fab.show();
+                                //fab.show();
                                 Snackbar.make(fab, "What a beautiful snackbar !", Snackbar.LENGTH_LONG).show();
                             }
                         })
-                        //.withDuration(...)
                         .start();
 
             }
