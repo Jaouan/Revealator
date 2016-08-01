@@ -104,7 +104,7 @@ public final class RevealatorHelper {
         final TranslateAnimation translateAnimation = new TranslateAnimation(delta[0], 0, delta[1], 0);
         translateAnimation.setDuration(duration);
         showAnimation.setStartOffset((long) (duration * 0.1f));
-        translateAnimation.setInterpolator(new AccelerateInterpolator());
+        translateAnimation.setInterpolator(new DecelerateInterpolator());
 
         // - Prepare animations set.
         final AnimationSet animationSet = new AnimationSet(true);
