@@ -1,6 +1,6 @@
 Android Revealator
 ========
-[![Release](https://jitpack.io/v/Jaouan/Revealator.svg)](https://jitpack.io/#Jaouan/Revealator) [![API](https://img.shields.io/badge/API-15%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=15)
+[![Release](https://jitpack.io/v/Jaouan/Revealator.svg)](https://jitpack.io/#Jaouan/Revealator) [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Revealator-green.svg?style=true)](https://android-arsenal.com/details/1/3788) [![API](https://img.shields.io/badge/API-15%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=15)
 
 An helper to circle reveal/unreveal a view easily, with translations and childs animations.
 The libraries is Android 15+ compatible.
