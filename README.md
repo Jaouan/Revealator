@@ -76,7 +76,9 @@ Revealator.unreveal( theAwesomeViewYouWantToUnreveal )
 References
 ========
 
-This project uses [ozodrukh's CircularReveal](https://github.com/ozodrukh/CircularReveal) for Android 4 compatibility.
+This project uses :
+ - [ozodrukh's CircularReveal](https://github.com/ozodrukh/CircularReveal) for Android 4 compatibility.
+ - [guohai's ArcTranslateAnimation](https://gist.github.com/guohai/2293628) for curved translation.
 
 License
 ========
