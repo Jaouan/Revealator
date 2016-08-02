@@ -1,4 +1,4 @@
-package com.jaouan.revealator;
+package com.jaouan.revealator.animations;
 
 import android.view.animation.Animation;
 
@@ -8,15 +8,15 @@ import android.view.animation.Animation;
 public class AnimationListenerAdapter implements Animation.AnimationListener {
 
     @Override
-    public void onAnimationStart(Animation animation) {
+    public void onAnimationStart(final Animation animation) {
     }
 
     @Override
-    public void onAnimationEnd(Animation animation) {
+    public void onAnimationEnd(final Animation animation) {
     }
 
     @Override
-    public void onAnimationRepeat(Animation animation) {
+    public void onAnimationRepeat(final Animation animation) {
     }
 
 }

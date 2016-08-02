@@ -31,6 +31,7 @@ public class ExempleActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Revealator.reveal(theAwesomeView)
                         .from(fab)
+                        .withCurvedTranslation()
                         .withChildsAnimation()
                         //.withDelayBetweenChildAnimation(...)
                         //.withChildAnimationDuration(...)
@@ -47,8 +48,9 @@ public class ExempleActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Revealator.unreveal(theAwesomeView)
                         .to(fab)
-                        //.withUnrevealDuration(...)
-                        //.withTranslateDuration(...)
+                        .withCurvedTranslation()
+//                        .withUnrevealDuration(...)
+//                        .withTranslateDuration(...)
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
