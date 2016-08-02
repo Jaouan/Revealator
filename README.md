@@ -4,7 +4,7 @@ Android Revealator
 An helper to circle reveal/unreveal a view easily, with translations and childs animations.
 The libraries is Android 15+ compatible.
 
-![demo](art/demo1.gif) ![demo](art/demo2.gif) ![demo](art/demo3.gif)
+![demo](art/demo3.gif) ![demo](art/demo2.gif) ![demo](art/demo1.gif)
 
 Installation
 --------
