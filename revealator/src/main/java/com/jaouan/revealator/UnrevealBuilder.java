@@ -1,5 +1,6 @@
 package com.jaouan.revealator;
 
+import android.graphics.PointF;
 import android.support.annotation.NonNull;
 import android.view.View;
 
@@ -14,10 +15,13 @@ public class UnrevealBuilder {
 
     private int mTranslateDuration = 250;
 
+    private float mShowFromViewInterpolatedDuration = 0.2f;
+
     private boolean mCurvedTranslation = false;
 
-    private Runnable mEndAction;
+    private PointF mCurveControlPoint;
 
+    private Runnable mEndAction;
     private View mToView;
 
     /**
@@ -62,6 +66,17 @@ public class UnrevealBuilder {
         return this;
     }
 
+    /**
+     * Defines from view's showing animation interpolated duration.
+     *
+     * @param showFromViewInterpolatedDuration Ends showing from view interpolated duration. Must be between 0 and 1. (default : 0.2f)
+     * @return Builder.
+     */
+    public UnrevealBuilder withShowFromViewInterpolatedDuration(final float showFromViewInterpolatedDuration) {
+        this.mShowFromViewInterpolatedDuration = showFromViewInterpolatedDuration;
+        return this;
+    }
+
 
     /**
      * Defines that translation must be curved.
@@ -71,6 +86,17 @@ public class UnrevealBuilder {
     public UnrevealBuilder withCurvedTranslation() {
         this.mCurvedTranslation = true;
         return this;
+    }
+
+    /**
+     * Defines that translation must be curved.
+     *
+     * @param curveControlPoint Relative curved control point.
+     * @return Builder.
+     */
+    public UnrevealBuilder withCurvedTranslation(final PointF curveControlPoint) {
+        this.mCurveControlPoint = curveControlPoint;
+        return this.withCurvedTranslation();
     }
 
     /**
@@ -102,7 +128,7 @@ public class UnrevealBuilder {
 
         // - If to view exists, show and translate the "to view".
         if (this.mToView != null) {
-            RevealatorHelper.showAndTranslateView(this.mToView, this.mViewToUnreveal, (int) (this.mUnrevealDuration * 0.9f), this.mTranslateDuration, this.mCurvedTranslation, new Runnable() {
+            RevealatorHelper.showAndTranslateView(this.mToView, this.mViewToUnreveal, (int) (this.mUnrevealDuration * 0.9f), this.mTranslateDuration, this.mCurvedTranslation, this.mCurveControlPoint, this.mShowFromViewInterpolatedDuration, new Runnable() {
                         @Override
                         public void run() {
                             // - Fire end action if necessary.

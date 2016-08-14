@@ -35,19 +35,21 @@ public final class RevealatorHelper {
     /**
      * Helps to hide then translate a view to another view.
      *
-     * @param fromView          From view.
-     * @param toView            Target view.
-     * @param duration          Duration.
-     * @param curvedTranslation Curved translation.
+     * @param fromView                       From view.
+     * @param toView                         Target view.
+     * @param duration                       Duration.
+     * @param curvedTranslation              Curved translation.
+     * @param controlPoint                   Curved angle.
+     * @param hideFromViewAtInterpolatedTime Start hiding from view interpolated time. Must be between 0 and 1.
      */
-    static void translateAndHideView(final View fromView, final View toView, final long duration, final boolean curvedTranslation) {
+    static void translateAndHideView(final View fromView, final View toView, final long duration, final boolean curvedTranslation, final PointF controlPoint, final float hideFromViewAtInterpolatedTime) {
         // - Determine translate delta.
         final PointF delta = getCenterLocationsDelta(fromView, toView);
 
         // - Prepare translate animation.
         Animation translateAnimation;
         if (curvedTranslation) {
-            translateAnimation = new BezierTranslateAnimation(0, delta.x, 0, delta.y);
+            translateAnimation = new BezierTranslateAnimation(0, delta.x, 0, delta.y, controlPoint);
         } else {
             translateAnimation = new TranslateAnimation(0, delta.x, 0, delta.y);
         }
@@ -56,9 +58,9 @@ public final class RevealatorHelper {
 
         // - Prepare hide animation.
         final ScaleAnimation hideAnimation = new ScaleAnimation(fromView.getScaleX(), 0, fromView.getScaleY(), 0, Animation.ABSOLUTE, delta.x + fromView.getMeasuredWidth() / 2, Animation.ABSOLUTE, delta.y + fromView.getMeasuredHeight() / 2);
-        hideAnimation.setDuration((long) (duration * 0.2f));
-        hideAnimation.setStartOffset((long) (duration * 0.9f));
-        hideAnimation.setInterpolator(new BounceInterpolator());
+        hideAnimation.setDuration((long) (duration * Math.min(1, Math.max(0, 1 - hideFromViewAtInterpolatedTime))));
+        hideAnimation.setStartOffset((long) (duration * Math.min(1, Math.max(0, hideFromViewAtInterpolatedTime))));
+        hideAnimation.setInterpolator(new AccelerateInterpolator());
 
         // - Prepare animations set.
         final AnimationSet animationSet = new AnimationSet(true);
@@ -78,26 +80,27 @@ public final class RevealatorHelper {
     /**
      * Helps to translate then show a view to another view.
      *
-     * @param viewToTranslate      View to translate..
-     * @param fromView             From view.
-     * @param startDelay           Start delay.
-     * @param duration             Translate duration.
-     * @param curvedTranslation    Curved translation.
-     * @param animationEndCallBack Callback fired on animation end.
+     * @param viewToTranslate        View to translate..
+     * @param fromView               From view.
+     * @param startDelay             Start delay.
+     * @param duration               Translate duration.
+     * @param curvedTranslation      Curved translation.
+     * @param controlPoint           Curved angle.
+     * @param showFromViewInterpolatedDuration Show from view interpolated duration. Must be between 0 and 1.
      */
-    public static void showAndTranslateView(final View viewToTranslate, final View fromView, final int startDelay, final int duration, final boolean curvedTranslation, final Runnable animationEndCallBack) {
+    public static void showAndTranslateView(final View viewToTranslate, final View fromView, final int startDelay, final int duration, final boolean curvedTranslation, final PointF controlPoint, float showFromViewInterpolatedDuration, final Runnable animationEndCallBack) {
         // - Determine translate delta.
         final PointF delta = getCenterLocationsDelta(viewToTranslate, fromView);
 
         // - Prepare show animation.
         final ScaleAnimation showAnimation = new ScaleAnimation(0, viewToTranslate.getScaleX(), 0, viewToTranslate.getScaleY(), Animation.RELATIVE_TO_SELF, .5f, Animation.RELATIVE_TO_SELF, .5f);
-        showAnimation.setDuration((long) (duration * 0.2f));
+        showAnimation.setDuration((long) (duration * Math.min(1, Math.max(0, showFromViewInterpolatedDuration))));
         showAnimation.setInterpolator(new BounceInterpolator());
 
         // - Prepare translate animation.
         Animation translateAnimation;
         if (curvedTranslation) {
-            translateAnimation = new BezierTranslateAnimation(delta.x, 0, delta.y, 0);
+            translateAnimation = new BezierTranslateAnimation(delta.x, 0, delta.y, 0, controlPoint);
         } else {
             translateAnimation = new TranslateAnimation(delta.x, 0, delta.y, 0);
         }

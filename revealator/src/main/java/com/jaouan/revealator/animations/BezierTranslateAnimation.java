@@ -81,6 +81,23 @@ public class BezierTranslateAnimation extends Animation {
         mToYType = toYType;
     }
 
+
+    /**
+     * Constructor to use when building a BezierTranslateAnimation from code.
+     *
+     * @param fromXDelta   Change in X coordinate to apply at the start of the animation
+     * @param toXDelta     Change in X coordinate to apply at the end of the animation
+     * @param fromYDelta   Change in Y coordinate to apply at the start of the animation
+     * @param toYDelta     Change in Y coordinate to apply at the end of the animation
+     * @param controlPoint Control point for Bezier algorithm.
+     */
+    public BezierTranslateAnimation(float fromXDelta, float toXDelta,
+                                    float fromYDelta, float toYDelta,
+                                    PointF controlPoint) {
+        this(fromXDelta, toXDelta, fromYDelta, toYDelta);
+        mControl = controlPoint;
+    }
+
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t) {
         final float dx = calculateBezier(interpolatedTime, mStart.x, mControl.x, mEnd.x);
@@ -100,8 +117,10 @@ public class BezierTranslateAnimation extends Animation {
 
         mStart = new PointF(mFromXDelta, mFromYDelta);
         mEnd = new PointF(mToXDelta, mToYDelta);
-        // - Define the cross of the two tangents from point 0 and point 1 as control point.
-        mControl = new PointF(mFromXDelta, mToYDelta);
+        // - Define the cross of the two tangents from point 0 and point 1 as control point if necessary.
+        if (mControl == null) {
+            mControl = new PointF(mFromXDelta, mToYDelta);
+        }
     }
 
     /**

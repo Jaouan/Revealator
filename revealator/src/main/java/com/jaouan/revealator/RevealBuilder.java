@@ -1,5 +1,6 @@
 package com.jaouan.revealator;
 
+import android.graphics.PointF;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,11 @@ public class RevealBuilder {
 
     private boolean mCurvedTranslation = false;
 
+    private PointF mCurveControlPoint;
+
     private Runnable mEndAction;
+
+    private float mHideFromViewAtInterpolatedTime = .8f;
 
     /**
      * Reveal builder's contructor.
@@ -62,6 +67,17 @@ public class RevealBuilder {
     }
 
     /**
+     * Defines when from view starts to hide.
+     *
+     * @param hideFromViewAtInterpolatedTime End from view at interpolated time of translation. Must be between 0 and 1. (default : 0.8f)
+     * @return Builder.
+     */
+    public RevealBuilder withHideFromViewAtTranslateInterpolatedTime(final float hideFromViewAtInterpolatedTime) {
+        this.mHideFromViewAtInterpolatedTime = hideFromViewAtInterpolatedTime;
+        return this;
+    }
+
+    /**
      * Defines that childs should be animated after reveal.
      *
      * @return Builder.
@@ -79,6 +95,18 @@ public class RevealBuilder {
     public RevealBuilder withCurvedTranslation() {
         this.mCurvedTranslation = true;
         return this;
+    }
+
+
+    /**
+     * Defines that translation must be curved.
+     *
+     * @param curveControlPoint Relative curved control point.
+     * @return Builder.
+     */
+    public RevealBuilder withCurvedTranslation(final PointF curveControlPoint) {
+        this.mCurveControlPoint = curveControlPoint;
+        return this.withCurvedTranslation();
     }
 
     /**
@@ -135,7 +163,7 @@ public class RevealBuilder {
         // - If from view exists, translate and hide the "from view" and delay reveal animation.
         int revealStartDelay = 0;
         if (this.mFromView != null) {
-            RevealatorHelper.translateAndHideView(this.mFromView, this.mViewToReveal, this.mTranslateDuration, this.mCurvedTranslation);
+            RevealatorHelper.translateAndHideView(this.mFromView, this.mViewToReveal, this.mTranslateDuration, this.mCurvedTranslation, this.mCurveControlPoint, this.mHideFromViewAtInterpolatedTime);
             revealStartDelay = (int) (this.mTranslateDuration * 0.9f);
         }
 
@@ -163,4 +191,5 @@ public class RevealBuilder {
                 }
         );
     }
+
 }

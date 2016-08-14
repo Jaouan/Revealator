@@ -54,10 +54,12 @@ Just put the view you want to animate in a `io.codetail.widget.RevealFrameLayout
 Revealator.reveal( theAwesomeViewYouWantToReveal )
     .from( theInitiatorViewYouWantToTranslate )
     .withCurvedTranslation()
+    //.withCurvedTranslation(curvePoint)
     .withChildsAnimation()
     //.withDelayBetweenChildAnimation(...)
     //.withChildAnimationDuration(...)
     //.withTranslateDuration(...)
+    //.withHideFromViewAtTranslateInterpolatedTime(...)
     //.withRevealDuration(...)
     //.withEndAction(...)
     .start();
@@ -68,8 +70,10 @@ Revealator.reveal( theAwesomeViewYouWantToReveal )
 Revealator.unreveal( theAwesomeViewYouWantToUnreveal )
     .to( theInitiatorViewYouWantToTranslateBack )
     .withCurvedTranslation()
+    //.withCurvedTranslation(curvePoint)
     //.withUnrevealDuration(...)
     //.withTranslateDuration(...)
+    //.withShowFromViewInterpolatedDuration(...)
     //.withEndAction(...)
     .start();
 ```
