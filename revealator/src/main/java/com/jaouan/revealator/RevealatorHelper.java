@@ -24,7 +24,7 @@ import io.codetail.animation.ViewAnimationUtils;
 /**
  * Helper for the revealator.
  */
-public final class RevealatorHelper {
+final class RevealatorHelper {
 
     /**
      * Disallow instantiation.
@@ -41,8 +41,9 @@ public final class RevealatorHelper {
      * @param curvedTranslation              Curved translation.
      * @param controlPoint                   Curved angle.
      * @param hideFromViewAtInterpolatedTime Start hiding from view interpolated time. Must be between 0 and 1.
+     * @param animationListener              Animation listener.
      */
-    static void translateAndHideView(final View fromView, final View toView, final long duration, final boolean curvedTranslation, final PointF controlPoint, final float hideFromViewAtInterpolatedTime) {
+    static void translateAndHideView(final View fromView, final View toView, final long duration, final boolean curvedTranslation, final PointF controlPoint, final float hideFromViewAtInterpolatedTime, final Animation.AnimationListener animationListener) {
         // - Determine translate delta.
         final PointF delta = getCenterLocationsDelta(fromView, toView);
 
@@ -72,6 +73,7 @@ public final class RevealatorHelper {
                 fromView.setVisibility(View.INVISIBLE);
             }
         });
+        animationSet.setAnimationListener(animationListener);
 
         // - Let's move !
         fromView.startAnimation(animationSet);
@@ -80,15 +82,15 @@ public final class RevealatorHelper {
     /**
      * Helps to translate then show a view to another view.
      *
-     * @param viewToTranslate        View to translate..
-     * @param fromView               From view.
-     * @param startDelay             Start delay.
-     * @param duration               Translate duration.
-     * @param curvedTranslation      Curved translation.
-     * @param controlPoint           Curved angle.
+     * @param viewToTranslate                  View to translate..
+     * @param fromView                         From view.
+     * @param startDelay                       Start delay.
+     * @param duration                         Translate duration.
+     * @param curvedTranslation                Curved translation.
+     * @param controlPoint                     Curved angle.
      * @param showFromViewInterpolatedDuration Show from view interpolated duration. Must be between 0 and 1.
      */
-    public static void showAndTranslateView(final View viewToTranslate, final View fromView, final int startDelay, final int duration, final boolean curvedTranslation, final PointF controlPoint, float showFromViewInterpolatedDuration, final Runnable animationEndCallBack) {
+    static void showAndTranslateView(final View viewToTranslate, final View fromView, final int startDelay, final int duration, final boolean curvedTranslation, final PointF controlPoint, float showFromViewInterpolatedDuration, final Runnable animationEndCallBack) {
         // - Determine translate delta.
         final PointF delta = getCenterLocationsDelta(viewToTranslate, fromView);
 
@@ -129,11 +131,10 @@ public final class RevealatorHelper {
      * Helps to reveal a view.
      *
      * @param viewToReveal         View to reveal.
-     * @param startDelay           Start delay.
      * @param duration             Duration.
      * @param animationEndCallBack Callback fired on animation end.
      */
-    static void revealView(final View viewToReveal, final int startDelay, final int duration, final Runnable animationEndCallBack) {
+    static void revealView(final View viewToReveal, final int duration, final Runnable animationEndCallBack) {
         // - Determine circle location and size.
         int viewCenterX = (viewToReveal.getLeft() + viewToReveal.getRight()) / 2;
         int viewCenterY = (viewToReveal.getTop() + viewToReveal.getBottom()) / 2;
@@ -145,7 +146,6 @@ public final class RevealatorHelper {
         final Animator circularRevealAnimator =
                 ViewAnimationUtils.createCircularReveal(viewToReveal, viewCenterX, viewCenterY, 0, finalRadius);
         circularRevealAnimator.setInterpolator(new DecelerateInterpolator());
-        circularRevealAnimator.setStartDelay(startDelay);
         circularRevealAnimator.setDuration(duration);
         circularRevealAnimator.addListener(new AnimatorListenerAdapter() {
             @Override

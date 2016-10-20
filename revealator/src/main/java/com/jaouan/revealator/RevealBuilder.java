@@ -4,6 +4,9 @@ import android.graphics.PointF;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+
+import com.jaouan.revealator.animations.AnimationListenerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,13 +163,6 @@ public class RevealBuilder {
         // - Make view to reveal invisible.
         mViewToReveal.setVisibility(View.INVISIBLE);
 
-        // - If from view exists, translate and hide the "from view" and delay reveal animation.
-        int revealStartDelay = 0;
-        if (this.mFromView != null) {
-            RevealatorHelper.translateAndHideView(this.mFromView, this.mViewToReveal, this.mTranslateDuration, this.mCurvedTranslation, this.mCurveControlPoint, this.mHideFromViewAtInterpolatedTime);
-            revealStartDelay = (int) (this.mTranslateDuration * 0.9f);
-        }
-
         // - Find and hide all childs if necessary.
         final List<View> ordoredChildsViews = new ArrayList<>();
         if (this.mChildsAnimation) {
@@ -176,8 +172,30 @@ public class RevealBuilder {
             }
         }
 
-        // - Reveal the view !
-        RevealatorHelper.revealView(mViewToReveal, revealStartDelay, this.mRevealDuration, new Runnable() {
+        // - If from view does not exist.
+        if (this.mFromView == null) {
+            // - Reveal view and childs.
+            revealViewAndChilds(ordoredChildsViews);
+        } else {
+            // - Prepare to reveal view when translation end.
+            final Animation.AnimationListener animationListener = new AnimationListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    revealViewAndChilds(ordoredChildsViews);
+                }
+            };
+            // - Translate and hide the "from view" and delay reveal animation.
+            RevealatorHelper.translateAndHideView(this.mFromView, this.mViewToReveal, this.mTranslateDuration, this.mCurvedTranslation, this.mCurveControlPoint, this.mHideFromViewAtInterpolatedTime, animationListener);
+        }
+    }
+
+    /**
+     * Reveal view and childs.
+     *
+     * @param ordoredChildsViews Childs views.
+     */
+    private void revealViewAndChilds(final List<View> ordoredChildsViews) {
+        RevealatorHelper.revealView(mViewToReveal, mRevealDuration, new Runnable() {
                     @Override
                     public void run() {
                         // - Show childs view if necessary.

@@ -22,6 +22,7 @@ public class UnrevealBuilder {
     private PointF mCurveControlPoint;
 
     private Runnable mEndAction;
+
     private View mToView;
 
     /**
