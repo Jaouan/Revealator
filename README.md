@@ -18,7 +18,7 @@ repositories {
 ```
 
 ```java
-compile 'com.github.jaouan:revealator:1.1.0'
+compile 'com.github.jaouan:revealator:1.2.1'
 ```
 
 Usage
